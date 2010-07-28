@@ -1,7 +1,30 @@
 = dynamic_attributes
 
-dynamic_attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
-deserialized to a given text column.
+dynamic_attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized  and deserialized to a given text column. Example:
+
+    >> dm = DynamicModel.new(:field_test => 'I am a dynamic attribute')
+      +-------+-------------+--------------------------------------------+
+      | title | description | dynamic_attributes                         |
+      +-------+-------------+--------------------------------------------+
+      |       |             | {"field_test"=>"I am a dynamic_attribute"} |
+      +-------+-------------+--------------------------------------------+
+    >> dm.field_test
+      => "I am a dynamic_attribute"
+    >> dm.field_test2
+      NoMethodError: undefined method `field_test2'
+    >> dm.field_test2 = 'I am too!'
+      => 'I am too!'
+    >> dm.field_test2
+      => 'I am too!'
+    >> dm.save
+      +-------+-------------+------------------------------------------------------------------------+
+      | title | description | dynamic_attributes                                                     |
+      +-------+-------------+------------------------------------------------------------------------+
+      |       |             | {"field_test2"=>"I am too!", "field_test"=>"I am a dynamic_attribute"} |
+      +-------+-------------+------------------------------------------------------------------------+
+          
+
+
 
 == Requirements
 
