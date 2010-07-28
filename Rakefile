@@ -5,12 +5,29 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "dynamic_attributes"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Dynamic attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
+deserialized to a given text column.}
+    gem.description = %Q{Dynamic attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
+deserialized to a given text column. Dynamic attributes can be defined by simply setting an attribute or by passing them on create or update.}
     gem.email = "r.j.delange@nedforce.nl"
     gem.homepage = "http://github.com/moiristo/dynamic_attributes"
     gem.authors = ["Reinier de Lange"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+    gem.files = [
+      "init.rb",
+      ".document",
+      ".gitignore",
+      "LICENSE",
+      "README.rdoc",
+      "Rakefile",
+      "VERSION",
+      "lib/dynamic_attributes.rb"
+    ]
+    gem.test_files = [
+      "test/helper.rb",
+      "test/test_dynamic_attributes.rb",
+      "test/database.yml",
+      "test/schema.rb"      
+    ]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new

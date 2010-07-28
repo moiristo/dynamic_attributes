@@ -1,6 +1,67 @@
 = dynamic_attributes
 
-Description goes here.
+dynamic_attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
+deserialized to a given text column.
+
+== Requirements ==
+
+* Rails 2.x
+
+== Installation ==
+
+* config.gem 'dynamic_attributes', sudo rake gems:install
+* gem install dynamic_attributes
+
+== Usage ==
+
+To add dynamic_attributes to an AR model, take the following steps:
+
+* Create a migration to add a column to serialize the dynamic attributes to:
+
+  class AddDynamicAttributesToDynamicModels < ActiveRecord::Migration
+    def self.up
+      add_column :dynamic_models, :dynamic_attributes, :text
+    end
+
+    def self.down
+      remove_column :dynamic_models, :dynamic_attributes
+    end
+  end
+  
+* Add dynamic_attributes to your AR model:
+
+  class DynamicModel < ActiveRecord::Base
+    has_dynamic_attributes
+  end  
+  
+* Now you can add dynamic attributes in several ways. Examples:
+
+  - New: DynamicModel.new(:title => 'Hello', :field_summary => 'This is a dynamic attribute')
+  - Create: DynamicModel.create(:title => 'Hello', :field_summary => 'This is a dynamic attribute')
+  - Update: 
+    * dynamic_model.update_atribute(:field_summary, 'This is a dynamic attribute')
+    * dynamic_model.update_atributes(:field_summary => 'This is a dynamic attribute', :description => 'Testing')
+  - Set manually: dynamic_model.field_summary = 'This is a dynamic attribute'
+  
+== Options ==
+
+The has_dynamic_attribute call takes three different options:
+
+* :dynamic_attribute_field
+ - Defines the database column to serialize to.
+* :dynamic_attribute_prefix
+  - Defines the prefix that a dynamic attribute should have. All attribute assignments that start with this prefix will become dynamic attributes. Note that it's not recommended to set this prefix to the empty string; as every method call that falls through to method_missing will become a dynamic attribute.
+* :destroy_dynamic_attribute_for_nil
+  - When set to true, the module will remove a dynamic attribute when its value is set to nil. Defaults to false, causing the module to store a dynamic attribute even if its value is nil.
+
+By default, the has_dynamic_attributes call without options equals to calling: 
+
+has_dynamic_attributes 
+  :dynamic_attribute_field => :dynamic_attributes, 
+  :dynamic_attribute_prefix => 'field_', 
+  :destroy_dynamic_attribute_for_nil => false
+  
+Take a look at the code Rdoc for more information!
 
 == Note on Patches/Pull Requests
  
