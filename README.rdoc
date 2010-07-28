@@ -3,36 +3,36 @@
 dynamic_attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
 deserialized to a given text column.
 
-== Requirements ==
+== Requirements
 
 * Rails 2.x
 
-== Installation ==
+== Installation
 
 * config.gem 'dynamic_attributes', sudo rake gems:install
 * gem install dynamic_attributes
 
-== Usage ==
+== Usage
 
 To add dynamic_attributes to an AR model, take the following steps:
 
 * Create a migration to add a column to serialize the dynamic attributes to:
 
-  class AddDynamicAttributesToDynamicModels < ActiveRecord::Migration
-    def self.up
-      add_column :dynamic_models, :dynamic_attributes, :text
-    end
+    class AddDynamicAttributesToDynamicModels < ActiveRecord::Migration
+      def self.up
+        add_column :dynamic_models, :dynamic_attributes, :text
+      end
 
-    def self.down
-      remove_column :dynamic_models, :dynamic_attributes
+      def self.down
+        remove_column :dynamic_models, :dynamic_attributes
+      end
     end
-  end
   
 * Add dynamic_attributes to your AR model:
 
-  class DynamicModel < ActiveRecord::Base
-    has_dynamic_attributes
-  end  
+    class DynamicModel < ActiveRecord::Base
+      has_dynamic_attributes
+    end  
   
 * Now you can add dynamic attributes in several ways. Examples:
 
@@ -43,12 +43,12 @@ To add dynamic_attributes to an AR model, take the following steps:
     * dynamic_model.update_atributes(:field_summary => 'This is a dynamic attribute', :description => 'Testing')
   - Set manually: dynamic_model.field_summary = 'This is a dynamic attribute'
   
-== Options ==
+== Options
 
 The has_dynamic_attribute call takes three different options:
 
 * :dynamic_attribute_field
- - Defines the database column to serialize to.
+  - Defines the database column to serialize to.
 * :dynamic_attribute_prefix
   - Defines the prefix that a dynamic attribute should have. All attribute assignments that start with this prefix will become dynamic attributes. Note that it's not recommended to set this prefix to the empty string; as every method call that falls through to method_missing will become a dynamic attribute.
 * :destroy_dynamic_attribute_for_nil
@@ -56,10 +56,7 @@ The has_dynamic_attribute call takes three different options:
 
 By default, the has_dynamic_attributes call without options equals to calling: 
 
-has_dynamic_attributes 
-  :dynamic_attribute_field => :dynamic_attributes, 
-  :dynamic_attribute_prefix => 'field_', 
-  :destroy_dynamic_attribute_for_nil => false
+has_dynamic_attributes :dynamic_attribute_field => :dynamic_attributes, :dynamic_attribute_prefix => 'field_', :destroy_dynamic_attribute_for_nil => false
   
 Take a look at the code Rdoc for more information!
 
