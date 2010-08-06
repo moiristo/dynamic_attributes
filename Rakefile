@@ -5,9 +5,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "dynamic_attributes"
-    gem.summary = %Q{Dynamic attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
+    gem.summary = %Q{dynamic_attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
 deserialized to a given text column.}
-    gem.description = %Q{Dynamic attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
+    gem.description = %Q{dynamic_attributes is a gem that lets you dynamically specify attributes on ActiveRecord models, which will be serialized and
 deserialized to a given text column. Dynamic attributes can be defined by simply setting an attribute or by passing them on create or update.}
     gem.email = "r.j.delange@nedforce.nl"
     gem.homepage = "http://github.com/moiristo/dynamic_attributes"
