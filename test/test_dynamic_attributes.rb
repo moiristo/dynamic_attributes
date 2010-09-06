@@ -77,7 +77,7 @@ class TestDynamicAttributes < Test::Unit::TestCase
   def test_should_allow_different_serialization_field
     DynamicModel.dynamic_attribute_field = 'extra'
     @dynamic_model.update_attributes(:title => 'Title', :field_test1 => 'Hello', :field_test2 => 'World')
-    assert_equal({}, @dynamic_model.dynamic_attributes)
+    assert_equal({}, @dynamic_model.dynamic_attributes || {})
     assert_equal({"field_test1"=>"Hello", "field_test2"=>"World"}, @dynamic_model.extra)
   end
 end

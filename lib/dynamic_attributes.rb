@@ -18,16 +18,24 @@ class << ActiveRecord::Base
     self.dynamic_attribute_prefix = options[:dynamic_attribute_prefix] || 'field_'
     cattr_accessor :destroy_dynamic_attribute_for_nil
     self.destroy_dynamic_attribute_for_nil = options[:destroy_dynamic_attribute_for_nil] || false    
-    
-    include DynamicAttributes    
+
+    include DynamicAttributes 
   end
 end
 
 # The DynamicAttributes module handles all dynamic attributes.
 module DynamicAttributes
-  
+
+    # Overrides the initializer to take dynamic attributes into account
+    def initialize(attributes = nil)
+      dynamic_attributes = {}
+      (attributes ||= {}).each{|att,value| dynamic_attributes[att] = value if att.to_s.starts_with?(self.dynamic_attribute_prefix) }
+      super(attributes.except(*dynamic_attributes.keys))   
+      set_dynamic_attributes(dynamic_attributes)    
+    end
+      
     # On saving an AR record, the attributes to be persisted are re-evaluated and written to the serialization field. 
-    def before_save
+    def evaluate_dynamic_attributes
       new_dynamic_attributes = {}
       self.persisting_dynamic_attributes.uniq.each do |dynamic_attribute| 
         value = send(dynamic_attribute)
@@ -40,30 +48,25 @@ module DynamicAttributes
       end
       write_attribute(self.dynamic_attribute_field, new_dynamic_attributes)
     end
-
+    
     # After find, populate the dynamic attributes and create accessors
-    def after_find
+    def populate_dynamic_attributes
       (read_attribute(self.dynamic_attribute_field) || {}).each {|att, value| set_dynamic_attribute(att, value); self.destroy_dynamic_attribute_for_nil = false if value.nil? }
     end
-
-    # Creates an accessor when a non-existing setter with the configured dynamic attribute prefix is detected. Calls super otherwise.
-    def method_missing(method, *arguments, &block) 
-      (method.to_s =~ /#{self.dynamic_attribute_prefix}(.+)=/) ? set_dynamic_attribute(self.dynamic_attribute_prefix + $1, *arguments.first) : super
-    end 
     
-    # Overrides the initializer to take dynamic attributes into account
-    def initialize(attributes = nil)
-      dynamic_attributes = {}
-      (attributes ||= {}).each{|att,value| dynamic_attributes[att] = value if att.to_s.starts_with?(self.dynamic_attribute_prefix) }
-      super(attributes.except(*dynamic_attributes.keys))   
-      set_dynamic_attributes(dynamic_attributes)    
-    end
+    # Explicitly define after_find for Rails 2.x
+    def after_find; populate_dynamic_attributes end    
 
     # Overrides update_attributes to take dynamic attributes into account
     def update_attributes(attributes)  
       set_dynamic_attributes(attributes)  
       super(attributes)
     end
+    
+    # Creates an accessor when a non-existing setter with the configured dynamic attribute prefix is detected. Calls super otherwise.
+    def method_missing(method, *arguments, &block) 
+      (method.to_s =~ /#{self.dynamic_attribute_prefix}(.+)=/) ? set_dynamic_attribute(self.dynamic_attribute_prefix + $1, *arguments.first) : super
+    end     
     
     # Returns the dynamic attributes that will be persisted to the serialization column. This array can
     # be altered to force dynamic attributes to not be saved in the database or to persist other attributes, but
@@ -74,6 +77,9 @@ module DynamicAttributes
     
     # Ensures the configured dynamic attribute field is serialized by AR.
     def self.included object
+      super
+      object.after_find  :populate_dynamic_attributes         
+      object.before_save :evaluate_dynamic_attributes    
       object.serialize object.dynamic_attribute_field
     end
 

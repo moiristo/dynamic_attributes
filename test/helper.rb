@@ -5,6 +5,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 gem "activerecord"
+require 'FileUtils'
 require 'active_record'
 require 'dynamic_attributes'
 require 'pp'
@@ -15,7 +16,7 @@ end
 
 def load_schema
   config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
-  ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
+  ActiveRecord::Base.logger = ActiveSupport::BufferedLogger.new(File.dirname(__FILE__) + "/debug.log")
   db_adapter = ENV['DB']
   # no db passed, try one of these fine config-free DBs before bombing.
   db_adapter ||= begin
