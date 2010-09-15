@@ -28,7 +28,7 @@ dynamic_attributes is a gem that lets you dynamically specify attributes on Acti
 
 == Requirements
 
-* Rails 2.x / 3
+* Rails 2.x / 3 (Tested for 2.3.5, 2.3.8 & 3).
 
 == Installation
 
@@ -94,6 +94,10 @@ By default, the has_dynamic_attributes call without options equals to calling:
 has_dynamic_attributes :dynamic_attribute_field => :dynamic_attributes, :dynamic_attribute_prefix => 'field_', :destroy_dynamic_attribute_for_nil => false
   
 Take a look at the code Rdoc for more information!
+
+== Validations
+
+The validations provided by AR can be used for dynamic attributes as if it is a normal attribute.
 
 == Note on Patches/Pull Requests
  

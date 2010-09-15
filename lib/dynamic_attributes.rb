@@ -121,4 +121,11 @@ module DynamicAttributes
       write_attribute(self.dynamic_attribute_field.to_s, (read_attribute(self.dynamic_attribute_field.to_s) || {}).merge(attribute.to_s => value))                
     end 
     
+    # Gets the object's singleton class. Backported from Rails 2.3.8 to support older versions of Rails.
+    def singleton_class
+      class << self
+        self
+      end
+    end
+    
 end
