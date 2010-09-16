@@ -71,6 +71,8 @@ Note that a dynamic attribute should be prefixed (by default with 'field_'), see
 * Get Info:
   * dynamic_model.has_dynamic_attribute?(dynamic_attribute)
     * Returns whether a given attribute is a dynamic attribute. Accepts strings and symbols.
+  * dynamic_model.read_dynamic_attribute(dynamic_attribute)
+    * Returns the value for a given dynamic attribute. Returns nil if the attribute does not exist or if the attribute is not a dynamic attribute.   
   * dynamic_model.persisting_dynamic_attributes
     * Returns an array of the dynamic attributes that will be persisted.
   * DynamicModel.dynamic_attribute_field
