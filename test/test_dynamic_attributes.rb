@@ -20,6 +20,7 @@ class TestDynamicAttributes < Test::Unit::TestCase
     assert_equal 'hello', @dynamic_model.field_test
     assert @dynamic_model.persisting_dynamic_attributes.include?('field_test')
     assert @dynamic_model.dynamic_attributes.keys.include?('field_test')
+    assert @dynamic_model.has_dynamic_attribute?(:field_test)    
   end
   
   def test_should_create_dynamic_attributes_for_hash
@@ -27,7 +28,9 @@ class TestDynamicAttributes < Test::Unit::TestCase
     assert dynamic_model.persisting_dynamic_attributes.include?('field_test1')
     assert dynamic_model.persisting_dynamic_attributes.include?('field_test2')    
     assert_equal 'Hello', dynamic_model.field_test1
-    assert_equal 'World', dynamic_model.field_test2    
+    assert_equal 'World', dynamic_model.field_test2  
+    assert dynamic_model.has_dynamic_attribute?(:field_test1)
+    assert dynamic_model.has_dynamic_attribute?(:field_test2)                
   end
   
   def test_should_update_attributes
@@ -39,13 +42,18 @@ class TestDynamicAttributes < Test::Unit::TestCase
     
     @dynamic_model.reload
     assert_equal 'Hello', @dynamic_model.field_test1
-    assert_equal 'World', @dynamic_model.field_test2        
+    assert_equal 'World', @dynamic_model.field_test2  
+    
+    assert @dynamic_model.has_dynamic_attribute?(:field_test1)    
+    assert @dynamic_model.has_dynamic_attribute?(:field_test2)          
   end
   
   def test_should_load_dynamic_attributes_after_find
     DynamicModel.update_all("dynamic_attributes = '---\nfield_test: Hi!\n'", :id => @dynamic_model.id)    
     dynamic_model = DynamicModel.find(@dynamic_model.id)
     assert_equal 'Hi!', dynamic_model.field_test
+    
+    assert dynamic_model.has_dynamic_attribute?(:field_test)    
   end
   
   def test_should_set_dynamic_attribute_to_nil_if_configured
@@ -53,12 +61,14 @@ class TestDynamicAttributes < Test::Unit::TestCase
     assert_nil @dynamic_model.field_test
     assert @dynamic_model.persisting_dynamic_attributes.include?('field_test')    
     assert @dynamic_model.dynamic_attributes.include?('field_test')
+    assert @dynamic_model.has_dynamic_attribute?(:field_test)    
     
     DynamicModel.destroy_dynamic_attribute_for_nil = true
     assert @dynamic_model.update_attribute(:field_test,nil)
     assert !@dynamic_model.persisting_dynamic_attributes.include?('field_test')  
     assert !@dynamic_model.dynamic_attributes.include?('field_test')    
     assert !@dynamic_model.respond_to?('field_test=')
+    assert !@dynamic_model.has_dynamic_attribute?(:field_test)    
   end
   
   def test_should_allow_different_prefix
@@ -68,7 +78,9 @@ class TestDynamicAttributes < Test::Unit::TestCase
     assert_equal 'hello', @dynamic_model.what_test
     assert @dynamic_model.persisting_dynamic_attributes.include?('what_test')
     assert @dynamic_model.dynamic_attributes.keys.include?('what_test')
-        
+    assert @dynamic_model.has_dynamic_attribute?(:what_test)
+    assert !@dynamic_model.has_dynamic_attribute?(:field_test)
+            
     assert_raises NoMethodError do
       @dynamic_model.field_test = 'Fail'
     end

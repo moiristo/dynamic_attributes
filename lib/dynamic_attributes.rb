@@ -33,6 +33,10 @@ module DynamicAttributes
       super(attributes.except(*dynamic_attributes.keys))   
       set_dynamic_attributes(dynamic_attributes)    
     end
+    
+    def has_dynamic_attribute?(dynamic_attribute)
+      return persisting_dynamic_attributes.include?(dynamic_attribute.to_s)
+    end
       
     # On saving an AR record, the attributes to be persisted are re-evaluated and written to the serialization field. 
     def evaluate_dynamic_attributes
