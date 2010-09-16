@@ -34,15 +34,22 @@ module DynamicAttributes
       set_dynamic_attributes(dynamic_attributes)    
     end
     
+    # Returns whether a given attribute is a dynamic attribute
     def has_dynamic_attribute?(dynamic_attribute)
       return persisting_dynamic_attributes.include?(dynamic_attribute.to_s)
+    end
+    
+    # Reads the value of the given dynamic attribute. 
+    # Returns nil if the attribute does not exist or if it is not a dynamic attribute.
+    def read_dynamic_attribute(dynamic_attribute)
+      has_dynamic_attribute?(dynamic_attribute) ? (send(dynamic_attribute) rescue nil) : nil
     end
       
     # On saving an AR record, the attributes to be persisted are re-evaluated and written to the serialization field. 
     def evaluate_dynamic_attributes
       new_dynamic_attributes = {}
       self.persisting_dynamic_attributes.uniq.each do |dynamic_attribute| 
-        value = send(dynamic_attribute)
+        value = read_dynamic_attribute(dynamic_attribute)
         if value.nil? and destroy_dynamic_attribute_for_nil
           self.persisting_dynamic_attributes.delete(dynamic_attribute)
           singleton_class.send(:remove_method, dynamic_attribute + '=')
@@ -86,6 +93,13 @@ module DynamicAttributes
       object.before_save :evaluate_dynamic_attributes    
       object.serialize object.dynamic_attribute_field
     end
+    
+    # Gets the object's singleton class. Backported from Rails 2.3.8 to support older versions of Rails.
+    def singleton_class
+      class << self
+        self
+      end
+    end    
 
   private
 
@@ -124,12 +138,5 @@ module DynamicAttributes
     def update_dynamic_attribute(attribute, value)
       write_attribute(self.dynamic_attribute_field.to_s, (read_attribute(self.dynamic_attribute_field.to_s) || {}).merge(attribute.to_s => value))                
     end 
-    
-    # Gets the object's singleton class. Backported from Rails 2.3.8 to support older versions of Rails.
-    def singleton_class
-      class << self
-        self
-      end
-    end
     
 end
