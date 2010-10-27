@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 gem "activerecord"
-require 'FileUtils'
+require 'fileutils'
 require 'active_record'
 require 'dynamic_attributes'
 require 'pp'
