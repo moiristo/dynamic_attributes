@@ -99,20 +99,26 @@ module DynamicAttributes
       class << self
         self
       end
-    end    
+    end      
+    
+    # Defines an accessor for the given attribute. It is defined withinin the public scope to ensure the
+    # accessor is publicly available in ruby 1.9.
+    def define_accessor_for_attribute(att)
+      singleton_class.send(:attr_accessor, att)      
+    end
 
   private
-
+  
     # Method that is called when a dynamic attribute is added to this model. It adds this attribute to the list
     # of attributes that will be persisited, creates an accessor and sets the attribute value. To reflect that the
     # attribute has been added, the serialization attribute will also be updated. 
-    def set_dynamic_attribute(att, value)
+    def set_dynamic_attribute(att, value = nil)
       att = att.to_s
       persisting_dynamic_attributes << att
-      singleton_class.send(:attr_accessor, att)
+      define_accessor_for_attribute(att)
       send(att + '=', value)
       update_dynamic_attribute(att, value)
-    end
+    end    
     
     # Called on object initialization or when calling update_attributes to convert passed dynamic attributes
     # into attributes that will be persisted by calling set_dynamic_attribute if it does not exist already. 
