@@ -10,8 +10,18 @@ require 'active_record'
 require 'dynamic_attributes'
 require 'pp'
 
+class DynamicNestedModel < ActiveRecord::Base
+  has_dynamic_attributes
+  
+  belongs_to :dynamic_model
+end
+
 class DynamicModel < ActiveRecord::Base
   has_dynamic_attributes :dynamic_attribute_field => :dynamic_attributes, :dynamic_attribute_prefix => 'field_', :destroy_dynamic_attribute_for_nil => false  
+  
+  has_many :dynamic_nested_models
+  
+  accepts_nested_attributes_for :dynamic_nested_models
 end
 
 def load_schema
