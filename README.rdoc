@@ -103,6 +103,10 @@ Take a look at the code Rdoc for more information!
 
 The validations provided by AR can be used for dynamic attributes as if it is a normal attribute.
 
+== Contributors
+
+* Adam H. (terralab)
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
