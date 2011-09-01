@@ -92,4 +92,17 @@ class TestDynamicAttributes < Test::Unit::TestCase
     assert_equal({}, @dynamic_model.dynamic_attributes || {})
     assert_equal({"field_test1"=>"Hello", "field_test2"=>"World"}, @dynamic_model.extra)
   end
+  
+  def test_should_set_nested_dynamic_attributes
+    @dynamic_model.update_attributes(:dynamic_nested_models_attributes => { '0'=> { :title => 'A nested dynamic model', :field_test => 'Hello', :field_test2 => 'World' } })
+    assert DynamicNestedModel.any?
+    
+    nested_model = @dynamic_model.dynamic_nested_models.first
+    nested_model.has_dynamic_attribute?(:field_test)
+    nested_model.has_dynamic_attribute?(:field_test2)      
+    assert_equal 'A nested dynamic model', nested_model.title
+    assert_equal 'Hello', nested_model.field_test
+    assert_equal 'World', nested_model.field_test2            
+  end
+  
 end
