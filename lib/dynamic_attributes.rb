@@ -73,6 +73,13 @@ module DynamicAttributes
       set_dynamic_attributes(attributes)  
       super(attributes)
     end
+  
+    # Overrides update to take dynamic attributes into account
+    # (Rails 6.1 ActiveRecord deprecates update_attributes methods)
+    def update(attributes)  
+      set_dynamic_attributes(attributes)  
+      super(attributes)
+    end
     
     # Creates an accessor when a non-existing setter with the configured dynamic attribute prefix is detected. Calls super otherwise.
     def method_missing(method, *arguments, &block) 
@@ -120,7 +127,7 @@ module DynamicAttributes
       update_dynamic_attribute(att, value)
     end    
     
-    # Called on object initialization or when calling update_attributes to convert passed dynamic attributes
+    # Called on object initialization or when calling update_attributes/update to convert passed dynamic attributes
     # into attributes that will be persisted by calling set_dynamic_attribute if it does not exist already. 
     # The serialization column will also be updated and the detected dynamic attributes are removed from the passed
     # attributes hash.
